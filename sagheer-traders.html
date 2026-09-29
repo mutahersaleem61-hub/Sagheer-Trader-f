@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sagheer Traders</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--ink:#1b2333;--mut:#6b7280;--line:#d9dde3;--pri:#1f2f4d;--pri2:#141f35;--acc:#b08a3e;--bad:#a12b2b;--ok:#1e6b45}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--ink);font-size:14px}
+input,select,button,table{font-family:Arial,Helvetica,sans-serif}
+header{background:var(--pri2);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--acc)}
+header b{font-size:21px;letter-spacing:1px}
+header small{color:#d8c89b;font-family:Arial;letter-spacing:.5px}
+nav{display:flex;align-items:center;gap:2px;padding:0 12px;background:var(--pri);flex-wrap:wrap}
+nav button.t{background:transparent;color:#c5cddd;border:0;padding:12px 16px;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.4px;border-bottom:3px solid transparent}
+nav button.t.on{color:#fff;border-bottom-color:var(--acc)}
+#burger{margin-left:auto;background:transparent;border:1px solid #4a5b7c;color:#fff;border-radius:4px;padding:6px 10px;cursor:pointer;font-size:18px;line-height:1}
+#drawer{position:fixed;inset:0;background:rgba(10,15,25,.5);display:none;z-index:9}
+#drawer.on{display:block}
+#drawer div{position:absolute;right:0;top:0;bottom:0;width:250px;background:#fff;padding:14px 0;box-shadow:-4px 0 14px rgba(0,0,0,.25)}
+#drawer h4{margin:0;padding:6px 18px 12px;color:var(--pri);border-bottom:1px solid var(--line);font-size:15px}
+#drawer a{display:block;padding:13px 18px;cursor:pointer;font-family:Arial;font-size:14px;color:var(--ink);border-bottom:1px solid #eee}
+#drawer a:hover{background:#f3f4f6}
+main{max-width:980px;margin:0 auto;padding:16px}
+.pg{display:none}.pg.on{display:block}
+.box{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px;margin-bottom:16px}
+h3{margin:0 0 12px;font-size:16px;color:var(--pri);border-bottom:1px solid var(--line);padding-bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--pri);padding:12px 14px}
+.stat.p{border-top-color:var(--acc)}
+.stat span{font:11px Arial;color:var(--mut);text-transform:uppercase;letter-spacing:.6px}
+.stat b{display:block;font-size:20px;margin-top:4px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px}
+.row>div{flex:1;min-width:120px}
+label{display:block;font:bold 11px Arial;color:var(--mut);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+input,select{width:100%;padding:9px 10px;border:1px solid #c3c9d2;border-radius:3px;font-size:14px;background:#fff}
+button.b{background:var(--pri);color:#fff;border:0;padding:10px 16px;border-radius:3px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.3px}
+button.b.g{background:#e6e9ee;color:var(--pri)}
+button.b.r{background:#f6e6e6;color:var(--bad)}
+button.s{padding:5px 9px;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;text-transform:uppercase;color:var(--mut);text-align:left;padding:8px 6px;border-bottom:2px solid var(--pri);letter-spacing:.4px}
+td{padding:9px 6px;border-bottom:1px solid var(--line)}
+.n{text-align:right}
+.tag{padding:2px 8px;border-radius:3px;font:bold 11px Arial}
+.paid{background:#e0f1e8;color:var(--ok)}.due{background:#f6e6e6;color:var(--bad)}
+.empty{color:var(--mut);padding:12px 0;font-style:italic}
+.rank{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;background:var(--acc);color:#fff;font:bold 12px Arial;margin-right:8px}
+.tot{display:flex;justify-content:flex-end;gap:30px;padding:4px 6px}
+.tot.big{font-size:18px;font-weight:700;color:var(--pri2);border-top:2px solid var(--pri);margin-top:6px;padding-top:8px}
+.inv{border:1px solid var(--pri);padding:24px;background:#fff}
+.inv h2{margin:0;color:var(--pri2);letter-spacing:1px}
+.inv .hd{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:3px double var(--acc);padding-bottom:12px;margin-bottom:12px}
+.led{background:#f8f9fb}
+#login{position:fixed;inset:0;background:var(--pri2);display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
+#login .c{background:#fff;padding:28px;border-radius:4px;width:100%;max-width:340px;border-top:4px solid var(--acc)}
+#login h2{margin:0 0 4px;color:var(--pri2)}
+#login p{margin:0 0 16px;color:var(--mut);font-family:Arial;font-size:13px}
+#lerr{color:var(--bad);font:13px Arial;margin-top:8px;min-height:16px}
+#printArea{display:none}
+@media print{body>*{display:none!important}body>#printArea{display:block!important}#printArea .inv{border:0}}
+@media(max-width:600px){main{padding:10px}th,td{padding:7px 3px;font-size:12px}nav button.t{padding:10px 10px}}
+</style>
+</head>
+<body>
+<div id="login"><div class="c"><h2>Sagheer Traders</h2><p id="lsub"></p>
+ <label>Password</label>
+ <div style="position:relative"><input type="password" id="lpw" onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:38px">
+ <span onclick="togglePw('lpw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:15px;user-select:none" title="Show/hide password">&#128065;</span></div>
+ <div id="lconf" style="display:none;margin-top:10px"><label>Confirm password</label>
+ <div style="position:relative"><input type="password" id="lpw2" onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:38px">
+ <span onclick="togglePw('lpw2',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:15px;user-select:none" title="Show/hide password">&#128065;</span></div></div>
+ <div style="margin-top:14px"><button class="b" style="width:100%" id="lbtn" onclick="doLogin()"></button></div><div id="lerr"></div></div></div>
+
+<div id="app" style="display:none">
+<header><div><b>SAGHEER TRADERS</b><br><small>Phone: 0329-9756042</small></div><small>Billing &amp; Stock Register</small></header>
+<nav>
+ <button class="t on" data-p="dash">Dashboard</button>
+ <button class="t" data-p="sale">New Invoice</button>
+ <button class="t" data-p="stock">Stock</button>
+ <button id="burger" onclick="$('drawer').classList.add('on')" title="Menu">&#9776;</button>
+</nav>
+<div id="drawer" onclick="this.classList.remove('on')"><div onclick="event.stopPropagation()">
+ <h4>More options</h4>
+ <a onclick="go('ledger')">Ledger</a>
+ <a onclick="go('hist')">History</a>
+ <a onclick="sumSel=null;go('summary')">Combined Summary</a>
+ <a onclick="logout()" style="color:var(--bad)">Logout</a>
+</div></div>
+<main>
+
+<section class="pg on" id="dash">
+ <div class="row"><div style="max-width:200px"><label>Period</label>
+  <select id="period" onchange="renderDash()"><option value="today">Today</option><option value="month" selected>This month</option><option value="all">All time</option></select></div></div>
+ <div class="grid" id="stats"></div>
+ <div class="box"><h3>Most Sold Items</h3><div id="top"></div></div>
+ <div class="box"><h3>Low Stock</h3><div id="low"></div></div>
+ <div class="box"><h3>Backup &amp; Restore</h3>
+  <p style="margin:0 0 10px;color:var(--mut);font-family:Arial;font-size:13px">Download a backup regularly so your data stays safe.</p>
+  <button class="b" onclick="backup()">Download backup</button>
+  <button class="b g" onclick="$('rf').click()">Restore backup</button>
+  <input type="file" id="rf" accept=".json" style="display:none" onchange="restore(event)"></div>
+</section>
+
+<section class="pg" id="sale">
+ <div class="box"><h3>New Invoice</h3>
+  <div class="row"><div><label>Customer name</label><input id="cName" placeholder="Walk-in customer"></div>
+  <div><label>Phone (optional)</label><input id="cPhone"></div></div>
+  <div class="row"><div style="flex:2"><label>Item</label><select id="sItem" onchange="fillRate()"></select></div>
+  <div><label>Qty</label><input id="sQty" type="number" min="1" value="1"></div>
+  <div><label>Rate</label><input id="sRate" type="number"></div>
+  <div style="flex:0"><button class="b" onclick="addLine()">Add</button></div></div>
+  <table><thead><tr><th>Item</th><th class="n">Qty</th><th class="n">Rate</th><th class="n">Amount</th><th></th></tr></thead><tbody id="lines"></tbody></table>
+  <div class="empty" id="noLines">No items added.</div>
+  <div class="row" style="margin-top:10px"><div style="max-width:180px"><label>Discount (Rs)</label><input id="disc" type="number" value="0" oninput="renderLines()"></div></div>
+  <div class="tot big"><span>Total</span><span id="grand">0</span></div>
+  <div class="row" style="margin:12px 0 0"><div style="flex:0"><button class="b" onclick="makeInvoice(false)">Save invoice</button></div>
+  <div style="flex:0"><button class="b g" onclick="makeInvoice(true)" style="white-space:nowrap">Save as paid</button></div>
+  <div style="flex:0"><button class="b r" onclick="clearSale()">Clear</button></div></div>
+ </div>
+</section>
+
+<section class="pg" id="stock">
+ <div class="box"><h3>Add Item</h3>
+  <div class="row"><div style="flex:2"><label>Item name</label><input id="pName"></div>
+  <div><label>Cost price</label><input id="pCost" type="number"></div>
+  <div><label>Sale price</label><input id="pPrice" type="number"></div>
+  <div><label>Stock</label><input id="pStock" type="number"></div>
+  <div><label>Low alert at</label><input id="pMin" type="number" value="5"></div>
+  <div style="flex:0"><button class="b" onclick="addItem()">Add</button></div></div>
+ </div>
+ <div class="box"><h3>Stock List</h3><div id="stockList"></div></div>
+</section>
+
+<section class="pg" id="ledger">
+ <div class="grid" id="ledStats"></div>
+ <div class="box"><h3>Customer Ledger</h3><div id="ledList"></div></div>
+</section>
+
+<section class="pg" id="hist">
+ <div class="box"><h3>Invoice History</h3>
+  <div class="row"><div style="max-width:200px"><label>Filter by date</label><input type="date" id="hDate" onchange="renderHist()"></div>
+  <div style="flex:0"><button class="b g" onclick="hDate.value='';renderHist()">All</button></div>
+  <div style="flex:0"><button class="b" onclick="sumFromSel()" style="white-space:nowrap">Combined summary of ticked</button></div></div>
+  <div id="hList"></div>
+ </div>
+ <div id="view" class="box" style="display:none"></div>
+</section>
+
+<section class="pg" id="summary">
+ <div class="box"><h3>Combined Summary</h3>
+  <div class="row"><div style="max-width:190px"><label>From</label><input type="date" id="sFrom" onchange="sumSel=null;renderSummary()"></div>
+  <div style="max-width:190px"><label>To</label><input type="date" id="sTo" onchange="sumSel=null;renderSummary()"></div>
+  <div style="flex:0"><button class="b g" onclick="sFrom.value='';sTo.value='';sumSel=null;renderSummary()">All</button></div>
+  <div style="flex:0"><button class="b" onclick="printHtml($('sumBox').innerHTML)">Print</button></div></div>
+  <div id="sumBox"></div>
+ </div>
+</section>
+</main>
+</div>
+<div id="printArea"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const K='sagheer_traders_v1',PK='sagheer_traders_pw';
+let D={products:[],invoices:[],seq:1};
+try{const s=localStorage.getItem(K);if(s)D=Object.assign(D,JSON.parse(s))}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(D))}catch(e){alert('Could not save data')}};
+const rs=n=>'Rs '+Math.round(n).toLocaleString('en-US');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let lines=[],sumSel=null,selHist=new Set(),openCust=null;
+
+/* ---------- Password ---------- */
+async function hash(t){
+ try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('st::'+t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+ catch(e){let h=5381;for(const c of 'st::'+t)h=((h<<5)+h+c.charCodeAt(0))|0;return 'f'+h}
+}
+function showLogin(){
+ const has=!!localStorage.getItem(PK);
+ $('app').style.display='none';$('login').style.display='flex';
+ $('lsub').textContent=has?'Enter your password to continue.':'First time setup: create a password.';
+ $('lbtn').textContent=has?'Login':'Create password';
+ $('lconf').style.display=has?'none':'block';
+ $('lpw').value='';$('lpw2').value='';$('lerr').textContent='';$('lpw').focus();
+}
+async function doLogin(){
+ const has=!!localStorage.getItem(PK),p=$('lpw').value;
+ if(!p)return $('lerr').textContent='Enter a password.';
+ if(has){
+  if(await hash(p)!==localStorage.getItem(PK))return $('lerr').textContent='Wrong password.';
+ }else{
+  if(p.length<4)return $('lerr').textContent='Use at least 4 characters.';
+  if(p!==$('lpw2').value)return $('lerr').textContent='Passwords do not match.';
+  localStorage.setItem(PK,await hash(p));
+ }
+ sessionStorage.setItem('st_in','1');enter();
+}
+function enter(){$('login').style.display='none';$('app').style.display='block';render()}
+function logout(){sessionStorage.removeItem('st_in');showLogin()}
+function togglePw(id,el){const i=$(id);const show=i.type==='password';i.type=show?'text':'password';el.style.opacity=show?'1':'.55'}
+
+/* ---------- Navigation ---------- */
+document.querySelectorAll('nav button.t').forEach(b=>b.onclick=()=>go(b.dataset.p));
+function go(p){
+ $('drawer').classList.remove('on');
+ document.querySelectorAll('nav button.t').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+ document.querySelectorAll('.pg').forEach(s=>s.classList.toggle('on',s.id===p));
+ render();window.scrollTo(0,0);
+}
+
+/* ---------- Stock ---------- */
+function addItem(){
+ const name=$('pName').value.trim();if(!name)return alert('Enter item name');
+ D.products.push({id:Date.now(),name,cost:+$('pCost').value||0,price:+$('pPrice').value||0,stock:+$('pStock').value||0,min:+$('pMin').value||0});
+ ['pName','pCost','pPrice','pStock'].forEach(i=>$(i).value='');save();render();
+}
+function addStock(id){const q=+prompt('How many units received?');if(!q)return;D.products.find(p=>p.id===id).stock+=q;save();render()}
+function delItem(id){if(confirm('Delete this item?')){D.products=D.products.filter(p=>p.id!==id);save();render()}}
+function renderStock(){
+ $('stockList').innerHTML=D.products.length?
+ '<table><thead><tr><th>Item</th><th class="n">Cost</th><th class="n">Price</th><th class="n">Stock</th><th></th></tr></thead><tbody>'+
+ D.products.map(p=>`<tr><td>${esc(p.name)}</td><td class="n">${p.cost}</td><td class="n">${p.price}</td>
+ <td class="n"><b style="color:${p.stock<=p.min?'var(--bad)':'inherit'}">${p.stock}</b></td>
+ <td class="n"><button class="b g s" onclick="addStock(${p.id})">+ Stock</button> <button class="b r s" onclick="delItem(${p.id})">Del</button></td></tr>`).join('')+'</tbody></table>'
+ :'<div class="empty">No items yet. Add your first item above.</div>';
+}
+
+/* ---------- Invoice ---------- */
+function fillSelect(){
+ const v=$('sItem').value;
+ $('sItem').innerHTML=D.products.length?D.products.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.stock})</option>`).join(''):'<option value="">-- add items in Stock --</option>';
+ if(v)$('sItem').value=v;fillRate();
+}
+function fillRate(){const p=D.products.find(x=>x.id==$('sItem').value);$('sRate').value=p?p.price:''}
+function addLine(){
+ const p=D.products.find(x=>x.id==$('sItem').value),qty=+$('sQty').value,rate=+$('sRate').value;
+ if(!p||qty<=0)return alert('Select item and quantity');
+ const have=lines.filter(l=>l.pid===p.id).reduce((a,l)=>a+l.qty,0);
+ if(have+qty>p.stock&&!confirm('Only '+p.stock+' in stock. Add anyway?'))return;
+ lines.push({pid:p.id,name:p.name,qty,rate,cost:p.cost});$('sQty').value=1;renderLines();
+}
+const subtotal=()=>lines.reduce((a,l)=>a+l.qty*l.rate,0);
+function renderLines(){
+ $('lines').innerHTML=lines.map((l,i)=>`<tr><td>${esc(l.name)}</td><td class="n">${l.qty}</td><td class="n">${l.rate}</td><td class="n">${l.qty*l.rate}</td><td class="n"><button class="b r s" onclick="lines.splice(${i},1);renderLines()">x</button></td></tr>`).join('');
+ $('noLines').style.display=lines.length?'none':'block';
+ $('grand').textContent=rs(Math.max(0,subtotal()-(+$('disc').value||0)));
+}
+function clearSale(){lines=[];$('disc').value=0;$('cName').value='';$('cPhone').value='';renderLines()}
+function makeInvoice(paid){
+ if(!lines.length)return alert('Add at least one item');
+ const discount=+$('disc').value||0;
+ const inv={id:Date.now(),no:D.seq++,date:today(),customer:$('cName').value.trim()||'Walk-in customer',phone:$('cPhone').value.trim(),
+  items:lines.map(l=>({...l})),discount,total:Math.max(0,subtotal()-discount),paid};
+ lines.forEach(l=>{const p=D.products.find(x=>x.id===l.pid);if(p)p.stock-=l.qty});
+ D.invoices.push(inv);save();clearSale();go('hist');showInv(inv.id);
+}
+
+/* ---------- History ---------- */
+function renderHist(){
+ const f=$('hDate').value,list=D.invoices.filter(i=>!f||i.date===f).slice().reverse();
+ const tot=list.reduce((a,i)=>a+i.total,0),pd=list.filter(i=>i.paid).reduce((a,i)=>a+i.total,0);
+ $('hList').innerHTML=list.length?
+ `<div style="margin-bottom:10px;font-family:Arial;font-size:13px">Total: <b>${rs(tot)}</b> &nbsp; <span style="color:var(--ok)">Paid: <b>${rs(pd)}</b></span> &nbsp; <span style="color:var(--bad)">Unpaid: <b>${rs(tot-pd)}</b></span></div>`+
+ '<table><thead><tr><th></th><th>#</th><th>Date</th><th>Customer</th><th class="n">Total</th><th>Status</th></tr></thead><tbody>'+
+ list.map(i=>`<tr><td><input type="checkbox" style="width:auto" ${selHist.has(i.id)?'checked':''} onchange="this.checked?selHist.add(${i.id}):selHist.delete(${i.id})"></td>
+ <td style="cursor:pointer" onclick="showInv(${i.id})">${i.no}</td><td style="cursor:pointer" onclick="showInv(${i.id})">${i.date}</td><td style="cursor:pointer" onclick="showInv(${i.id})">${esc(i.customer)}</td><td class="n">${rs(i.total)}</td>
+ <td><span class="tag ${i.paid?'paid':'due'}">${i.paid?'Paid':'Unpaid'}</span></td></tr>`).join('')+'</tbody></table>'
+ :'<div class="empty">No invoices found.</div>';
+}
+function invHtml(i){
+ return `<div class="inv"><div class="hd"><div><h2>SAGHEER TRADERS</h2><div style="color:var(--mut);font-family:Arial">Phone: 0329-9756042</div></div>
+ <div style="text-align:right"><b>INVOICE # ${i.no}</b><br>Date: ${i.date}<br><span class="tag ${i.paid?'paid':'due'}">${i.paid?'PAID':'UNPAID'}</span></div></div>
+ <p><b>Billed to:</b> ${esc(i.customer)} ${esc(i.phone)}</p>
+ <table><thead><tr><th>Item</th><th class="n">Qty</th><th class="n">Rate</th><th class="n">Amount</th></tr></thead><tbody>
+ ${i.items.map(l=>`<tr><td>${esc(l.name)}</td><td class="n">${l.qty}</td><td class="n">${l.rate}</td><td class="n">${l.qty*l.rate}</td></tr>`).join('')}</tbody></table>
+ ${i.discount?`<div class="tot"><span>Discount</span><span>- ${rs(i.discount)}</span></div>`:''}
+ <div class="tot big"><span>Total</span><span>${rs(i.total)}</span></div>
+ <p style="text-align:center;color:var(--mut);margin:18px 0 0">Thank you for your business.</p></div>`;
+}
+function showInv(id){
+ const i=D.invoices.find(x=>x.id===id);if(!i)return;
+ $('view').style.display='block';
+ $('view').innerHTML=invHtml(i)+`<div class="row" style="margin:12px 0 0"><div style="flex:0"><button class="b" onclick="printHtml(invHtml(D.invoices.find(x=>x.id===${id})))">Print</button></div>
+ <div style="flex:0"><button class="b g" style="white-space:nowrap" onclick="togglePaid(${id})">${i.paid?'Mark unpaid':'Mark paid'}</button></div>
+ <div style="flex:0"><button class="b r" onclick="delInv(${id})">Delete</button></div></div>`;
+ $('view').scrollIntoView({behavior:'smooth'});
+}
+function printHtml(h){$('printArea').innerHTML=h;window.print()}
+function togglePaid(id){const i=D.invoices.find(x=>x.id===id);i.paid=!i.paid;save();render();showInv(id)}
+function delInv(id){
+ if(!confirm('Delete this invoice? Stock will be returned.'))return;
+ const i=D.invoices.find(x=>x.id===id);
+ i.items.forEach(l=>{const p=D.products.find(x=>x.id===l.pid);if(p)p.stock+=l.qty});
+ D.invoices=D.invoices.filter(x=>x.id!==id);selHist.delete(id);save();$('view').style.display='none';render();
+}
+function sumFromSel(){if(!selHist.size)return alert('Tick one or more invoices first.');sumSel=[...selHist];go('summary')}
+
+/* ---------- Ledger ---------- */
+function renderLedger(){
+ const m={};
+ D.invoices.forEach(i=>{const c=m[i.customer]=m[i.customer]||{n:i.customer,tot:0,paid:0,inv:[]};c.tot+=i.total;if(i.paid)c.paid+=i.total;c.inv.push(i)});
+ const cs=Object.values(m).sort((a,b)=>(b.tot-b.paid)-(a.tot-a.paid));
+ const T=cs.reduce((a,c)=>a+c.tot,0),P=cs.reduce((a,c)=>a+c.paid,0);
+ $('ledStats').innerHTML=[['Total billed',rs(T)],['Received',rs(P)],['Balance due',rs(T-P),1],['Customers',cs.length]].map(s=>`<div class="stat ${s[2]?'p':''}"><span>${s[0]}</span><b>${s[1]}</b></div>`).join('');
+ $('ledList').innerHTML=cs.length?'<table><thead><tr><th>Customer</th><th class="n">Billed</th><th class="n">Paid</th><th class="n">Balance</th><th></th></tr></thead><tbody>'+
+ cs.map((c,k)=>{
+  const bal=c.tot-c.paid,open=openCust===c.n;
+  return `<tr style="cursor:pointer" onclick="openCust=${open?'null':`'${esc(c.n).replace(/'/g,"\\'")}'`};renderLedger()"><td><b>${esc(c.n)}</b></td><td class="n">${rs(c.tot)}</td><td class="n">${rs(c.paid)}</td>
+  <td class="n"><b style="color:${bal>0?'var(--bad)':'var(--ok)'}">${rs(bal)}</b></td><td class="n">${open?'&#9650;':'&#9660;'}</td></tr>`+
+  (open?`<tr class="led"><td colspan="5"><table>${c.inv.map(i=>`<tr><td>#${i.no}</td><td>${i.date}</td><td class="n">${rs(i.total)}</td>
+   <td><span class="tag ${i.paid?'paid':'due'}">${i.paid?'Paid':'Unpaid'}</span></td>
+   <td class="n"><button class="b g s" onclick="ledToggle(${i.id})">${i.paid?'Mark unpaid':'Mark paid'}</button></td></tr>`).join('')}</table>
+   ${bal>0?`<div style="margin-top:8px"><button class="b s" onclick="ledPayAll(${k})">Mark all paid</button></div>`:''}</td></tr>`:'');
+ }).join('')+'</tbody></table>':'<div class="empty">No invoices yet.</div>';
+ window._cs=cs;
+}
+function ledToggle(id){const i=D.invoices.find(x=>x.id===id);i.paid=!i.paid;save();renderLedger()}
+function ledPayAll(k){if(!confirm('Mark all invoices of this customer as paid?'))return;window._cs[k].inv.forEach(i=>i.paid=true);save();renderLedger()}
+
+/* ---------- Combined summary ---------- */
+function renderSummary(){
+ let list=sumSel?D.invoices.filter(i=>sumSel.includes(i.id)):D.invoices.filter(i=>(!$('sFrom').value||i.date>=$('sFrom').value)&&(!$('sTo').value||i.date<=$('sTo').value));
+ if(!list.length){$('sumBox').innerHTML='<div class="empty">No invoices in this selection.</div>';return}
+ const cm={},im={};
+ list.forEach(i=>{const c=cm[i.customer]=cm[i.customer]||{tot:0,paid:0,n:0};c.tot+=i.total;c.n++;if(i.paid)c.paid+=i.total;
+  i.items.forEach(l=>{const t=im[l.name]=im[l.name]||{q:0,a:0};t.q+=l.qty;t.a+=l.qty*l.rate})});
+ const T=list.reduce((a,i)=>a+i.total,0),P=list.filter(i=>i.paid).reduce((a,i)=>a+i.total,0);
+ const src=sumSel?`${list.length} selected invoices`:`${list.length} invoices`+($('sFrom').value||$('sTo').value?` (${$('sFrom').value||'start'} to ${$('sTo').value||'today'})`:' (all)');
+ $('sumBox').innerHTML=`<div class="inv"><div class="hd"><div><h2>SAGHEER TRADERS</h2><div style="color:var(--mut);font-family:Arial">Combined Summary &bull; ${src}</div></div><div style="text-align:right"><b>SUMMARY</b><br>${today()}</div></div>
+ <b style="font-family:Arial;font-size:12px;color:var(--mut)">CUSTOMER-WISE</b>
+ <table><thead><tr><th>Customer</th><th class="n">Invoices</th><th class="n">Amount</th><th class="n">Paid</th><th class="n">Unpaid</th></tr></thead><tbody>
+ ${Object.entries(cm).map(([n,c])=>`<tr><td>${esc(n)}</td><td class="n">${c.n}</td><td class="n">${rs(c.tot)}</td><td class="n">${rs(c.paid)}</td><td class="n">${rs(c.tot-c.paid)}</td></tr>`).join('')}</tbody></table>
+ <div class="tot big"><span>Grand Total</span><span>${rs(T)}</span></div>
+ <div class="tot" style="color:var(--ok)"><span>Total Paid</span><span>${rs(P)}</span></div>
+ <div class="tot" style="color:var(--bad)"><span>Total Unpaid</span><span>${rs(T-P)}</span></div>
+ <b style="font-family:Arial;font-size:12px;color:var(--mut);display:block;margin-top:16px">ITEM TOTALS</b>
+ <table><thead><tr><th>Item</th><th class="n">Total Qty</th><th class="n">Amount</th></tr></thead><tbody>
+ ${Object.entries(im).sort((a,b)=>b[1].q-a[1].q).map(([n,t])=>`<tr><td>${esc(n)}</td><td class="n"><b>${t.q}</b></td><td class="n">${rs(t.a)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- Dashboard ---------- */
+function renderDash(){
+ const per=$('period').value,t=today();
+ const list=D.invoices.filter(i=>per==='all'||(per==='today'?i.date===t:i.date.slice(0,7)===t.slice(0,7)));
+ const sales=list.reduce((a,i)=>a+i.total,0);
+ const profit=list.reduce((a,i)=>a+i.items.reduce((s,l)=>s+(l.rate-l.cost)*l.qty,0)-i.discount,0);
+ const unpaid=D.invoices.filter(i=>!i.paid).reduce((a,i)=>a+i.total,0);
+ const sv=D.products.reduce((a,p)=>a+p.stock*p.cost,0);
+ $('stats').innerHTML=[['Sales',rs(sales)],['Profit',rs(profit),1],['Invoices',list.length],['Unpaid (all)',rs(unpaid)],['Stock value',rs(sv)]].map(s=>`<div class="stat ${s[2]?'p':''}"><span>${s[0]}</span><b>${s[1]}</b></div>`).join('');
+ const m={};list.forEach(i=>i.items.forEach(l=>{m[l.name]=(m[l.name]||0)+l.qty}));
+ const top=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,10);
+ $('top').innerHTML=top.length?'<table><tbody>'+top.map((x,n)=>`<tr><td><span class="rank">${n+1}</span>${esc(x[0])}</td><td class="n"><b>${x[1]}</b> sold</td></tr>`).join('')+'</tbody></table>':'<div class="empty">No sales in this period.</div>';
+ const low=D.products.filter(p=>p.stock<=p.min);
+ $('low').innerHTML=low.length?'<table><tbody>'+low.map(p=>`<tr><td>${esc(p.name)}</td><td class="n" style="color:var(--bad)"><b>${p.stock}</b> left</td></tr>`).join('')+'</tbody></table>':'<div class="empty">All items have enough stock.</div>';
+}
+
+/* ---------- Backup ---------- */
+function backup(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D)],{type:'application/json'}));a.download='sagheer-traders-backup-'+today()+'.json';a.click()}
+function restore(e){
+ const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.products||!d.invoices)throw 0;if(confirm('Replace current data with this backup?')){D=Object.assign(D,d);save();render()}}catch(x){alert('Invalid backup file')}};
+ r.readAsText(f);e.target.value='';
+}
+
+function render(){fillSelect();renderLines();renderStock();renderHist();renderLedger();renderDash();renderSummary()}
+sessionStorage.getItem('st_in')&&localStorage.getItem(PK)?enter():showLogin();
+</script>
+</body>
+</html>
